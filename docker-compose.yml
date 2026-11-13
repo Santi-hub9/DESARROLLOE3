@@ -1,0 +1,37 @@
+services:
+  db:
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS:?Define DB_ROOT_PASS in .env}
+      MARIADB_DATABASE: talentia
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/talentia.sql:/docker-entrypoint-initdb.d/01_base.sql:ro
+      - ./database/migracion_corte3.sql:/docker-entrypoint-initdb.d/02_corte3.sql:ro
+
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment: { BASE_URL: "", DB_HOST: db, DB_USER: root, DB_PASS: "${DB_ROOT_PASS:?Define DB_ROOT_PASS in .env}" }
+    ports: ["80:80"]
+    depends_on: [db]
+    volumes: [storage_data:/var/www/html/storage]
+
+  worker:            # el motor de automatización: reemplaza a n8n
+    build: .
+    restart: always
+    command: php bin/worker.php --loop
+    env_file: .env
+    environment: { BASE_URL: "", DB_HOST: db, DB_USER: root, DB_PASS: "${DB_ROOT_PASS:?Define DB_ROOT_PASS in .env}" }
+    depends_on: [db]
+    volumes: [storage_data:/var/www/html/storage]
+
+  ollama:            # opcional: plan B local (docker compose --profile local-ai up -d)
+    image: ollama/ollama
+    profiles: ["local-ai"]
+    restart: unless-stopped
+    volumes: [ollama_data:/root/.ollama]
+
+volumes: { db_data: {}, storage_data: {}, ollama_data: {} }

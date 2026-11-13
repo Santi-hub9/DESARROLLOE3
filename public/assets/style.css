@@ -1,0 +1,4 @@
+.talentia-nav{background:linear-gradient(90deg,#1e3a8a,#4f46e5)}
+.hero{background:linear-gradient(135deg,#1e3a8a,#7c3aed)}
+.kpi{transition:transform .15s}.kpi:hover{transform:translateY(-3px)}
+.score-ring{width:96px;height:96px;border-radius:50%;color:#fff;font-size:2rem;font-weight:700;display:flex;align-items:center;justify-content:center;margin:auto}

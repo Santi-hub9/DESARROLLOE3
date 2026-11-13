@@ -1,0 +1,11 @@
+.env
+/vendor/
+/storage/cv/*
+/storage/docs/*
+/storage/mail.log
+!/storage/cv/.gitkeep
+!/storage/docs/.gitkeep
+tests/vision/imagenes/*
+!tests/vision/imagenes/.gitkeep
+tests/vision/ground_truth.csv
+.git
